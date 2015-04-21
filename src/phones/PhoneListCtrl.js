@@ -8,7 +8,7 @@
         this.PhoneListService.addPhone();
     };
 
-    angular.module('demoApp').controller('PhoneListCtrl', PhoneListCtrl);
+    angular.module('libraryApp').controller('PhoneListCtrl', PhoneListCtrl);
 
 })();
 

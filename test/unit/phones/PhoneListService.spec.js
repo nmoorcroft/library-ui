@@ -2,7 +2,7 @@ describe('PhoneListService', function() {
 
     var PhoneListService;
 
-    beforeEach(module('demoApp'));
+    beforeEach(module('libraryApp'));
 
     beforeEach(inject(function($injector) {
         PhoneListService = $injector.get('PhoneListService');
@@ -10,10 +10,9 @@ describe('PhoneListService', function() {
 
 
     it('should add a new phone', function() {
-        expect(PhoneListService.findAll()).toEqual([{name:'phone 0', desc: 'some description'}]);
+        expect(PhoneListService.findAll()).toEqual([{ name:'phone 0', desc: 'some description' }]);
         PhoneListService.addPhone();
         expect(PhoneListService.findAll().length).toBe(2);
-
 
     });
 
