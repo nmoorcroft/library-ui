@@ -1,0 +1,10 @@
+<div>
+    <ul>
+        <li ng-repeat="book in ctrl.books">
+            <span><a ng-href="#/books/{{book.id}}">{{::book.name}}</a></span>
+            <p>{{::book.description}}</p>
+        </li>
+    </ul>
+
+</div>
+
