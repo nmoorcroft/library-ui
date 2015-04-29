@@ -1,5 +1,5 @@
 (function () {
-    angular.module('books', ['model']);
+    angular.module('books', ['ngRoute', 'model']);
 
 })();
 

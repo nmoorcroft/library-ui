@@ -7,7 +7,7 @@
         .controller('BookListCtrl', BookListCtrl)
         .config(function($routeProvider) {
             $routeProvider.when('/books', {
-                templateUrl: 'books/books.html',
+                templateUrl: 'books/book-list.html',
                 controller: 'BookListCtrl',
                 controllerAs: 'ctrl',
                 resolve: {

@@ -11,7 +11,7 @@
     /* @endif */
 
     app.config(function($routeProvider) {
-        $routeProvider.otherwise({redirectTo: '/books'});
+        $routeProvider.otherwise({ redirectTo: '/books' });
     });
 
 })();

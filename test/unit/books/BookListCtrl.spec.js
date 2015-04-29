@@ -1,15 +1,16 @@
-xdescribe('PhoneListService', function() {
+describe('PhoneListService', function() {
 
-    var BookService, $httpBackend;
+    var $httpBackend, $controller, $rootScope;
 
     beforeEach(module('config', function($provide) {
         $provide.constant('api_url', '/api');
     }));
 
-    beforeEach(module('app'));
+    beforeEach(module('books'));
 
     beforeEach(inject(function($injector) {
-        BookService = $injector.get('BookService');
+        $rootScope = $injector.get('$rootScope');
+        $controller = $injector.get('$controller');
         $httpBackend = $injector.get('$httpBackend');
     }));
 
@@ -20,7 +21,8 @@ xdescribe('PhoneListService', function() {
 
     it('should get all books from api', function() {
         $httpBackend.expectGET('/api/books').respond({});
-        BookService.findAllBooks();
+        var scope = $rootScope.$new();
+        var BookListCtrl = $controller('BookListCtrl', { $scope: scope });
         $httpBackend.flush();
     });
 
