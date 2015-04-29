@@ -26,7 +26,7 @@ module.exports = function (config) {
         ],
 
         preprocessors: {
-            'client/**/*.js': ['coverage']
+            'src/**/*.js': ['coverage']
         },
 
         // test results reporter to use

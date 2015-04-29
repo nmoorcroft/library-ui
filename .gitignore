@@ -1,10 +1,10 @@
 .DS_Store
-.idea
-*.iml
-node_modules
-public
 npm-debug.log
+.idea/
+*.iml
+node_modules/
+public/
 reports/
-temp
-processed
-bower_components
+coverage/
+processed/
+bower_components/
