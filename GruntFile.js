@@ -62,7 +62,7 @@ module.exports = function (grunt) {
                     separator: '\n',
                     banner: "/*! <%= pkg.name %>-<%= pkg.version %> */\n'use strict';\n"                    
                 },
-                src: [ 'processed/app.js', 'src/**/!(app).js'],
+                src: [ 'src/**/module.js', 'src/**/!(app|module).js', 'processed/app.js'],
                 dest: 'public/js/app.js'
             }
         },

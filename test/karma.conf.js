@@ -15,8 +15,8 @@ module.exports = function (config) {
             'public/vendor/lodash/lodash.js',
             'public/vendor/bootstrap/bootstrap.js',
             'bower_components/angular-mocks/angular-mocks.js',
-            'src/**/index.js',
-            'src/**/(!app).js',
+            'src/**/module.js',
+            'src/**/!(app).js',
             'src/app.js',
             'test/unit/**/*.spec.js'
         ],
