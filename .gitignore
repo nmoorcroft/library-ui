@@ -4,8 +4,7 @@
 node_modules
 public
 npm-debug.log
-test/coverage
-test/reports
+reports/
 temp
 processed
 bower_components

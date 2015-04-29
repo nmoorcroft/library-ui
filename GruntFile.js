@@ -93,8 +93,8 @@ module.exports = function (grunt) {
                 ]
             },
             coverageReport: {
-                src: 'test/coverage/**/lcov.info',
-                dest: 'test/reports/lcov.info'
+                src: 'coverage/**/lcov.info',
+                dest: 'reports/lcov.info'
             }
         },
 

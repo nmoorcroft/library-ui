@@ -1,16 +1,16 @@
 (function() {
 
-    var libraryApp = angular.module('libraryApp', ['ngRoute']);
+    angular.module('config', []).constant('api_url', '/* @echo api_url */');
 
-    libraryApp.constant('api_url', '/* @echo api_url */');
+    var app = angular.module('app', ['config', 'ngRoute', 'book']);
 
     /* @if debug != true */
-    libraryApp.config(function($logProvider) {
+    app.config(function($logProvider) {
         $logProvider.debugEnabled(true);
     });
     /* @endif */
 
-    libraryApp.config(function($routeProvider) {
+    app.config(function($routeProvider) {
         $routeProvider.otherwise({redirectTo: '/books'});
     });
 

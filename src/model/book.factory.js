@@ -22,6 +22,6 @@
         return Book;
     }
 
-    angular.module('libraryApp').factory('Book', BookFactory);
+    angular.module('model').factory('Book', BookFactory);
 
 })();

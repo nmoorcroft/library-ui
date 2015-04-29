@@ -11,11 +11,13 @@ module.exports = function (config) {
         files: [
             'public/vendor/jquery/jquery.js',
             'public/vendor/angular/angular.js',
+            'public/vendor/angular-route/angular-route.js',
             'public/vendor/lodash/lodash.js',
             'public/vendor/bootstrap/bootstrap.js',
             'bower_components/angular-mocks/angular-mocks.js',
-            'processed/app.js',
-            'src/**/!(app).js',
+            'src/**/index.js',
+            'src/**/(!app).js',
+            'src/app.js',
             'test/unit/**/*.spec.js'
         ],
 
@@ -32,17 +34,17 @@ module.exports = function (config) {
         reporters: ['progress', 'coverage', 'junit'],
 
         htmlReporter: {
-            outputDir: 'test/reports'
+            outputDir: 'reports/'
         },
 
         junitReporter: {
-            outputFile: 'test/reports/TEST-karma.xml',
+            outputFile: 'reports/TEST-karma.xml',
             suite: ''
         },
 
         coverageReporter: {
             type: 'lcov',
-            dir: 'test/coverage/'
+            dir: 'coverage/'
         },
 
         // web server port

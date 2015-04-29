@@ -3,7 +3,7 @@
         this.book = book;
     }
 
-    angular.module('libraryApp')
+    angular.module('books')
         .controller('BookDetailCtrl', BookDetailCtrl)
         .config(function($routeProvider) {
             $routeProvider.when('/books/:bookId', {
