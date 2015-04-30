@@ -19,7 +19,12 @@
             });
         };
 
+        Book.prototype.save = function () {
+            return $http.post(api_url + '/books', this);
+        };
+
         return Book;
+
     }
 
     angular.module('library.model').factory('Book', BookFactory);
