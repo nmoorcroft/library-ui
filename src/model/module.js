@@ -1,5 +1,5 @@
 (function () {
-    angular.module('model', []);
+    angular.module('library.model', []);
 
 
 })();

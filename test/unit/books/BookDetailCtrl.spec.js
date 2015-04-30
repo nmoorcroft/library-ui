@@ -1,4 +1,4 @@
-describe('BookListCtrl', function () {
+describe('BookDetailCtrl', function () {
 
     var $httpBackend, $controller, $rootScope;
 
@@ -17,8 +17,8 @@ describe('BookListCtrl', function () {
 
     it('should get all books from api', function () {
         var scope = $rootScope.$new();
-        var BookListCtrl = $controller('BookListCtrl as ctrl', {$scope: scope, books: [{name: 'book1'}]});
-        expect(scope.ctrl.books).toEqual([{name: 'book1'}]);
+        var BookDetailCtrl = $controller('BookDetailCtrl as ctrl', {$scope: scope, book: {name:'book1'}});
+        expect(scope.ctrl.book).toEqual({name:'book1'});
     });
 
 

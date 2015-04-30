@@ -11,7 +11,8 @@
         return this.Book.findById(id);
     };
 
-    angular.module('books').service('BookService', BookService);
+    angular.module('library.books').service('BookService', BookService);
 
 
 })();
+

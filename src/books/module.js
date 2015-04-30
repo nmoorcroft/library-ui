@@ -1,5 +1,8 @@
 (function () {
-    angular.module('books', ['ngRoute', 'model']);
+    angular.module('library.books', [
+        'ngRoute',
+        'library.model'
+    ]);
 
 })();
 
