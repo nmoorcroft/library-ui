@@ -1,6 +1,7 @@
 'use strict';
 
 /**
+ * grunt server         - start http server and watch files
  * grunt build          - clean and deploy development build to public/
  * grunt build-watch    - watch files for changes and rebuild
  * grunt test-unit      - run karma unit tests and generate coverage report
@@ -13,171 +14,185 @@
  */
 module.exports = function (grunt) {
 
-    function envConfig() {
-        var env = grunt.option('env') || 'dev';
-        return grunt.file.readJSON('config-' + env + '.json');
-    }
-
     grunt.registerTask('default', ['build']);
-    grunt.registerTask('build', ['env:config', 'clean:build', 'preprocess', 'copy:html', 'bower:install', 'less', 'concat', 'uglify']);
+    grunt.registerTask('server', ['build', 'configureProxies:server', 'connect','watch']);
+    grunt.registerTask('build', ['clean:build', 'copy:html', 'bower:install', 'less', 'concat', 'uglify']);
     grunt.registerTask('build-watch', ['build', 'watch']);
-    grunt.registerTask('test-unit', ['env:config', 'clean:test', 'preprocess', 'bower:install', 'karma:unit', 'copy:coverageReport']);
+    grunt.registerTask('test-unit', ['clean:test', 'bower:install', 'karma:unit', 'copy:coverageReport']);
     grunt.registerTask('test-e2e', ['build', 'protractor:test']);
     grunt.registerTask('test-watch', ['clean:test', 'karma:watch']);
 
+    var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
+
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
+            pkg: grunt.file.readJSON('package.json'),
 
-        env: {
-          config: envConfig()
-        },
-
-        bower: {
-            install: {
-                options: {
-                    targetDir: 'public/vendor',
-                    bowerOptions: {
-                        production: false
+            connect: {
+                'static': {
+                    options: {
+                        hostname: 'localhost',
+                        port: 8001,
+                        base: 'public/'
                     }
-                }
-            }
-        },
-
-        less: {
-            client: {
-                options: {
-                    paths: [ 'src/**/*.less', 'bower_components/bootstrap/less/**/*' ],
-                    concat: true,
-                    cleancss: true
                 },
-                files: {
-                    'public/css/styles.css': 'src/styles.less'
-                }
-            }
-        },
-
-        concat: {
-            client: {
-                options: {
-                    separator: '\n',
-                    banner: "/*! <%= pkg.name %>-<%= pkg.version %> */\n'use strict';\n"                    
-                },
-                src: [ 'src/**/module.js', 'src/**/!(app|module).js', 'processed/app.js'],
-                dest: 'public/js/app.js'
-            }
-        },
-
-        uglify: {
-            client: {
-                options: {
-                    banner: '/*! <%= pkg.name %>-<%= pkg.version %> */\n',
-                    mangle: false
-                },
-                files: {
-                    'public/js/app.min.js': [ '<%= concat.client.dest %>' ]
-                }
-            }
-        },
-
-        copy: {
-            html: {
-                files: [
+                server: {
+                    options: {
+                        hostname: 'localhost',
+                        port: 8000,
+                        middleware: function () {
+                            return [proxySnippet];
+                        }
+                    },
+                    proxies: [{
+                        context: '/',
+                        host: 'localhost',
+                        port: 8001
+                    },
                     {
-                        expand: true,
-                        cwd: 'src/',
-                        src: ['**/*.html'],
-                        dest: 'public/',
-                        filter: 'isFile'
+                       context: '/api',
+                        host: 'localhost',
+                        port: 3000
+                    }]
+                }
+            },
+
+            bower: {
+                install: {
+                    options: {
+                        targetDir: 'public/vendor',
+                        bowerOptions: {
+                            production: false
+                        }
                     }
+                }
+            },
 
-                ]
+            less: {
+                client: {
+                    options: {
+                        paths: ['src/**/*.less', 'bower_components/bootstrap/less/**/*'],
+                        concat: true,
+                        cleancss: true
+                    },
+                    files: {
+                        'public/css/styles.css': 'src/styles.less'
+                    }
+                }
             },
-            coverageReport: {
-                src: 'coverage/**/lcov.info',
-                dest: 'reports/lcov.info'
-            }
-        },
 
-        clean: {
-            build: {
-                src: [
-                    'processed',
-                    'public'
-                ]
+            concat: {
+                client: {
+                    options: {
+                        banner: "'use strict';\n\n",
+                        process: function(src, filepath) {
+                            return '// Source: ' + filepath + '\n' +
+                                src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
+                        }
+                    },
+                    src: ['src/**/module.js', 'src/**/!(app|module).js', 'src/app.js'],
+                    dest: 'public/js/app.js'
+                }
             },
-            test: {
-                src: [
-                    'test/reports',
-                    'test/coverage'
-                ]
-            },
-            node: {
-                src: [
-                    'node_modules',
-                    'bower_components'
-                ]
-            }
-        },
 
-        preprocess: {
-            client: {
-                src: 'src/app.js',
-                dest: 'processed/app.js'
-            }
-        },
+            uglify: {
+                client: {
+                    options: {
+                        banner: '/*! <%= pkg.name %>-<%= pkg.version %> */\n',
+                        mangle: false
+                    },
+                    files: {
+                        'public/js/app.min.js': ['<%= concat.client.dest %>']
+                    }
+                }
+            },
 
-        watch: {
-            options: {
-                livereload: true
-            },
-            app: {
-                files: ['src/app.js'],
-                tasks: ['env:config', 'preprocess']
-            },
-            js: {
-                files: ['src/**/!(app).js'],
-                tasks: ['env:config', 'concat', 'uglify']
-            },
-            css: {
-                files: ['src/**/*.less'],
-                tasks: ['less:client']
-            },
-            html: {
-                files: ['src/**/*.html'],
-                tasks: ['copy:html']
-            }
-        },
+            copy: {
+                html: {
+                    files: [
+                        {
+                            expand: true,
+                            cwd: 'src/',
+                            src: ['**/*.html'],
+                            dest: 'public/',
+                            filter: 'isFile'
+                        }
 
-        karma: {
-            unit: {
-                configFile: 'test/karma.conf.js',
-                singleRun: true
+                    ]
+                },
+                coverageReport: {
+                    src: 'coverage/**/lcov.info',
+                    dest: 'reports/lcov.info'
+                }
             },
+
+            clean: {
+                build: {
+                    src: [
+                        'public'
+                    ]
+                },
+                test: {
+                    src: [
+                        'test/reports',
+                        'test/coverage'
+                    ]
+                },
+                node: {
+                    src: [
+                        'node_modules',
+                        'bower_components'
+                    ]
+                }
+            },
+
             watch: {
-                configFile: 'test/karma.conf.js',
-                singleRun: false
-            }
-        },
-
-        protractor: {
-            options: {
-                configFile: 'node_modules/protractor/referenceConf.js',
-                keepAlive: false,
-                noColor: false
-            },
-            test: {
-                configFile: 'test/e2e.conf.js',
                 options: {
-                    args: {
-                        'baseUrl': 'http://localhost:63342/library-ui/public/'
+                    livereload: true
+                },
+                js: {
+                    files: ['src/**/*.js'],
+                    tasks: ['concat', 'uglify']
+                },
+                css: {
+                    files: ['src/**/*.less'],
+                    tasks: ['less:client']
+                },
+                html: {
+                    files: ['src/**/*.html'],
+                    tasks: ['copy:html']
+                }
+            },
+
+            karma: {
+                unit: {
+                    configFile: 'test/karma.conf.js',
+                    singleRun: true
+                },
+                watch: {
+                    configFile: 'test/karma.conf.js',
+                    singleRun: false
+                }
+            },
+
+            protractor: {
+                options: {
+                    configFile: 'node_modules/protractor/referenceConf.js',
+                    keepAlive: false,
+                    noColor: false
+                },
+                test: {
+                    configFile: 'test/e2e.conf.js',
+                    options: {
+                        args: {
+                            'baseUrl': 'http://localhost:63342/library-ui/public/'
+                        }
                     }
                 }
             }
+
         }
+    );
 
-    });
-
-    // Load NPM tasks
     grunt.loadNpmTasks('grunt-contrib-compress');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-clean');
@@ -185,11 +200,11 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-preprocess');
     grunt.loadNpmTasks('grunt-bower-task');
     grunt.loadNpmTasks('grunt-karma');
-    grunt.loadNpmTasks('grunt-env');
     grunt.loadNpmTasks('grunt-protractor-runner');
+    grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-connect-proxy');
 
 
 };
