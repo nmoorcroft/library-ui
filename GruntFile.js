@@ -15,7 +15,7 @@
 module.exports = function (grunt) {
 
     grunt.registerTask('default', ['build']);
-    grunt.registerTask('server', ['build', 'configureProxies:server', 'connect','watch']);
+    grunt.registerTask('server', ['build', 'configureProxies:server', 'connect', 'watch']);
     grunt.registerTask('build', ['clean:build', 'copy:html', 'bower:install', 'less', 'concat', 'uglify']);
     grunt.registerTask('build-watch', ['build', 'watch']);
     grunt.registerTask('test-unit', ['clean:test', 'bower:install', 'karma:unit', 'copy:coverageReport']);
@@ -43,16 +43,18 @@ module.exports = function (grunt) {
                             return [proxySnippet];
                         }
                     },
-                    proxies: [{
-                        context: '/',
-                        host: 'localhost',
-                        port: 8001
-                    },
-                    {
-                       context: '/api',
-                        host: 'localhost',
-                        port: 3000
-                    }]
+                    proxies: [
+                        {
+                            context: '/api',
+                            host: 'localhost',
+                            port: 3000
+                        },
+                        {
+                            context: '/',
+                            host: 'localhost',
+                            port: 8001
+                        }
+                    ]
                 }
             },
 
@@ -84,7 +86,7 @@ module.exports = function (grunt) {
                 client: {
                     options: {
                         banner: "'use strict';\n\n",
-                        process: function(src, filepath) {
+                        process: function (src, filepath) {
                             return '// Source: ' + filepath + '\n' +
                                 src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
                         }

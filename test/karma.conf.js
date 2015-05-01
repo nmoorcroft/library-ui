@@ -9,11 +9,11 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
-            'public/vendor/jquery/jquery.js',
-            'public/vendor/angular/angular.js',
-            'public/vendor/angular-route/angular-route.js',
-            'public/vendor/lodash/lodash.js',
-            'public/vendor/bootstrap/bootstrap.js',
+            'bower_components/jquery/jquery.js',
+            'bower_components/angular/angular.js',
+            'bower_components/angular-route/angular-route.js',
+            'bower_components/lodash/lodash.js',
+            'bower_components/bootstrap/bootstrap.js',
             'bower_components/angular-mocks/angular-mocks.js',
             'src/**/module.js',
             'src/**/app.js',
